@@ -72,7 +72,7 @@ const TECNOLOGIAS = [
 ];
 
 // Texto de "Sobre mí"
-const SOBRE_MI = "Estoy por terminar la Ingeniería en Desarrollo y Gestión de Software en la UT Cancún. Me atraen el desarrollo de videojuegos, las aplicaciones móviles y el hacking. Siempre estoy aprendiendo y me apoyo en buenos métodos de estudio y en la IA como herramienta para seguir mejorando.";
+const SOBRE_MI = "Estoy por terminar la Ingeniería en Desarrollo y Gestión de Software en la UT Cancún. También me gusta el desarrollo web, pero lo que más me llama la atención es el desarrollo de videojuegos y el desarrollo móvil; además, me interesa el hacking. Siempre estoy aprendiendo y me apoyo en buenos métodos de estudio y en la IA como herramienta para seguir mejorando.";
 
 // Iconos de las tecnologías (skillicons.dev en icons/sk/; los que no existen allí, de svgl.app en icons/)
 const ICONOS = {".NET": "icons/sk/dotnet.svg", "C#": "icons/sk/cs.svg", "Kotlin": "icons/sk/kotlin.svg", "JavaScript": "icons/sk/js.svg", "TypeScript": "icons/sk/ts.svg", "HTML / CSS": "icons/sk/html.svg", "Jetpack Compose": "icons/sk/kotlin.svg", "Kotlin Multiplatform": "icons/sk/kotlin.svg", "Unity": "icons/sk/unity.svg", "Prisma ORM": "icons/sk/prisma.svg", "MySQL": "icons/sk/mysql.svg", "SQL Server": "icons/sql-server.svg", "Git": "icons/sk/git.svg", "GitHub": "icons/sk/github.svg", "Android Studio": "icons/sk/androidstudio.svg", "VS Code": "icons/sk/vscode.svg", "Blender": "icons/sk/blender.svg", "Figma": "icons/sk/figma.svg", "Ubuntu": "icons/sk/ubuntu.svg", "Windows": "icons/sk/windows.svg", "Claude Code": "icons/claude-code.svg", "Gemini": "icons/gemini.svg", "Open Code": "icons/opencode-dark.svg"};

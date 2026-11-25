@@ -228,12 +228,9 @@ html{scroll-snap-type:y mandatory}
 
 .holo{height:380px}
 
-/* ---- Títulos en 3D (extrusión que sigue al mouse) ---- */
-:root{--dx:.9;--dy:.9;--ex:#1d4ed8}
+/* ---- Títulos en 3D (sombras fijas y ligeras) ---- */
 .sec{--ex:color-mix(in srgb,var(--acc) 72%,#000)}
-.hero{--ex:#1d4ed8}
-.sec h2{text-shadow:calc(1px*var(--dx)) calc(1px*var(--dy)) 0 var(--ex),calc(2px*var(--dx)) calc(2px*var(--dy)) 0 var(--ex),calc(3px*var(--dx)) calc(3px*var(--dy)) 0 var(--ex),calc(4px*var(--dx)) calc(4px*var(--dy)) 0 var(--ex),calc(5px*var(--dx)) calc(5px*var(--dy)) 0 var(--ex),calc(6px*var(--dx)) calc(6px*var(--dy)) 0 var(--ex),calc(7px*var(--dx)) calc(7px*var(--dy)) 0 var(--ex),calc(8px*var(--dx)) calc(8px*var(--dy)) 0 var(--ex),calc(9px*var(--dx)) calc(9px*var(--dy)) 0 var(--ex),calc(10px*var(--dx)) calc(10px*var(--dy)) 0 var(--ex),calc(11px*var(--dx)) calc(11px*var(--dy)) 0 var(--ex),calc(12px*var(--dx)) calc(12px*var(--dy)) 0 var(--ex),calc(16px*var(--dx)) calc(22px*var(--dy)) 26px rgba(0,0,0,.55);padding-right:.12em}
-h1 .w{padding-right:.14em;padding-bottom:.32em;margin-bottom:-.24em}
-h1 .w span{filter:drop-shadow(calc(1px*var(--dx)) calc(1px*var(--dy)) 0 var(--ex)) drop-shadow(calc(2px*var(--dx)) calc(2px*var(--dy)) 0 var(--ex)) drop-shadow(calc(3px*var(--dx)) calc(3px*var(--dy)) 0 var(--ex)) drop-shadow(calc(4px*var(--dx)) calc(4px*var(--dy)) 0 var(--ex)) drop-shadow(calc(5px*var(--dx)) calc(5px*var(--dy)) 0 var(--ex)) drop-shadow(calc(6px*var(--dx)) calc(6px*var(--dy)) 0 var(--ex)) drop-shadow(calc(7px*var(--dx)) calc(7px*var(--dy)) 0 var(--ex)) drop-shadow(calc(8px*var(--dx)) calc(8px*var(--dy)) 0 var(--ex)) drop-shadow(calc(9px*var(--dx)) calc(9px*var(--dy)) 0 var(--ex)) drop-shadow(calc(10px*var(--dx)) calc(10px*var(--dy)) 0 var(--ex)) drop-shadow(calc(11px*var(--dx)) calc(11px*var(--dy)) 0 var(--ex)) drop-shadow(calc(12px*var(--dx)) calc(12px*var(--dy)) 0 var(--ex))}
-@media(max-width:560px){:root{--dx:.55;--dy:.55}}
-@media(prefers-reduced-motion:reduce){.sec h2,h1 .w span{transition:none}}
+.sec h2{text-shadow:1px 1px 0 var(--ex),2px 2px 0 var(--ex),3px 3px 0 var(--ex),4px 4px 0 var(--ex),5px 5px 0 var(--ex),6px 6px 0 var(--ex);padding-right:.12em}
+/* nombre: capas azul, verde y roja desplazadas */
+h1 .w{padding-right:.14em;padding-bottom:.3em;margin-bottom:-.22em}
+h1 .w:nth-child(1) span,h1 .w:nth-child(2) span{color:#fff;background:none;text-shadow:.03em .03em 0 #3b82f6,.06em .06em 0 #22c55e,.09em .09em 0 #ef4444}

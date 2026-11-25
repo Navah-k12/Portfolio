@@ -127,8 +127,3 @@ if (!reducir) (function loop() {
   requestAnimationFrame(loop);
 })();
 
-// ---- Profundidad de los títulos 3D según el mouse ----
-if (!reducir && matchMedia("(pointer:fine)").matches) {
-  let tk = 0, mx = .5, my = .5;
-  addEventListener("pointermove", e => { mx = e.clientX / innerWidth; my = e.clientY / innerHeight; if (!tk) tk = requestAnimationFrame(() => { tk = 0; root.style.setProperty("--dx", (.9 - (mx - .5) * 1.6).toFixed(2)); root.style.setProperty("--dy", (.9 - (my - .5) * 1.6).toFixed(2)); }); }, { passive: true });
-}
