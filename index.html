@@ -2,43 +2,44 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Portafolio | Bryan Canche</title>
-<meta name="description" content="Portafolio de desarrollo móvil y ciberseguridad, estilo videojuego.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bryan Navarrete · Desarrollo de software</title>
+<meta name="description" content="Portafolio de Bryan Navarrete: desarrollo web, apps móviles, videojuegos y ciberseguridad.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="landing.css?v=7">
+<script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
-<div class="stars" aria-hidden="true"></div>
-<header class="hero">
-  <div class="avatar" aria-hidden="true"><i></i></div>
-  <div>
-    <p class="insert">▶ PLAYER 1 READY</p>
-    <h1 id="nombre"></h1>
-    <p class="clase" id="clase"></p>
-    <p class="bio" id="bio"></p>
-    <nav id="links"></nav>
-  </div>
+<div class="progreso" aria-hidden="true"></div>
+<header class="nav">
+  <a class="marca" href="#inicio" id="marca"></a>
+  <nav id="menu" aria-label="Secciones"></nav>
 </header>
 
-<main>
-  <section>
-    <h2>&gt; HABILIDADES</h2>
-    <div id="skills" class="skills"></div>
-  </section>
+<section id="inicio" class="hero" data-tema="hero">
+  <div class="wrap hero-grid">
+    <h1 id="nombre" aria-label=""></h1>
+    <div class="hero-lado">
+      <p class="rol rv" id="clase"></p>
+      <p class="bio rv" id="bio"></p>
+      <div class="links rv" id="links"></div>
+    </div>
+    <dl class="datos rv" id="datos"></dl>
+  </div>
+  <a class="baja" href="#web" aria-label="Ir a la primera sección"><span></span></a>
+</section>
 
-  <section>
-    <h2>&gt; MISIONES <small id="contador"></small></h2>
-    <div id="filtros" class="filtros"></div>
-    <div id="proyectos" class="grid"></div>
-  </section>
-</main>
+<main id="secciones"></main>
 
-<footer>© <span id="anio"></span> · GAME OVER? NO. CONTINUAR ▮</footer>
-<div id="modal" class="modal" hidden><img alt=""><button aria-label="Cerrar">X</button></div>
-<script src="proyectos.js"></script>
-<script src="app.js"></script>
+<footer class="pie">
+  <span>© <span id="anio"></span> <span id="pie"></span></span>
+  <a href="#inicio">Volver arriba</a>
+</footer>
+
+<script src="proyectos.js?v=3"></script>
+<script src="landing.js?v=7"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module" src="escenas3d.js?v=7"></script>
 </body>
 </html>
