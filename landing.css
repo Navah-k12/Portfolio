@@ -292,3 +292,9 @@ h1 .w:nth-child(1) span,h1 .w:nth-child(2) span{color:#fff;background:none;text-
   98%{opacity:0}
 }
 @media(prefers-reduced-motion:reduce){.js #ciber h2::before,.js #ciber h2::after{animation:none!important}}
+.sobre .links{margin-top:28px}
+/* Proyecto sin video: marco con aviso */
+.video.vacio{display:grid;place-items:center}
+.video.vacio video{display:none}
+.video.vacio::after{content:"Video próximamente";font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:#8a8a8a}
+.nav-web.sin-video video{visibility:hidden}

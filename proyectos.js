@@ -41,31 +41,31 @@ const HABILIDADES = {
 const PROYECTOS = [
   { titulo: "Invitaciones Web", categoria: "Web",
     descripcion: "Plataforma para diseñar y publicar invitaciones digitales (bodas, XV años, cumpleaños). Resuelve dos problemas: el organizador necesita un editor visual para no diseñar desde cero, y el invitado debe confirmar asistencia desde el celular. La API usa .NET 10 con Clean Architecture (Domain, Application, Infrastructure) y SQL Server. Seguridad: JWT, límite de peticiones por IP, links personales con token de 128 bits y validación de archivos por su firma. Tiene pruebas xUnit y Vitest, CI en GitHub Actions con escaneo de secretos y un registro escrito de decisiones técnicas.",
-    tecnologias: [".NET 10", "Clean Architecture", "SQL Server", "EF Core", "React", "TypeScript", "Tailwind", "JWT", "Cloudinary", "Docker", "GitHub Actions"], repo: "", demo: "", evidencias: [] },
+    tecnologias: [".NET 10", "Clean Architecture", "SQL Server", "EF Core", "React", "TypeScript", "Tailwind", "JWT", "Cloudinary", "Docker", "GitHub Actions"], repo: "", demo: "", video: "evidencias/demo-web.mp4", evidencias: [] },
   { titulo: "Signal Runner (PWA)", categoria: "Web",
     descripcion: "Un juego que sigue funcionando sin internet. Lo hice para entender cómo una web puede comportarse como una app instalable y no depender de la red. Usé JavaScript puro, sin frameworks, para controlar yo mismo la caché: estrategia «caché primero», borrado de versiones viejas al activar y una página de respaldo offline. Probé el flujo completo con DevTools en modo sin conexión, e incluí un manifest con ícono maskable y una guía de demostración en el README.",
-    tecnologias: ["JavaScript", "Service Worker", "Canvas", "PWA"], repo: "https://github.com/Navah-k12/PWA_Service_Worker", demo: "", evidencias: [] },
+    tecnologias: ["JavaScript", "Service Worker", "Canvas", "PWA"], repo: "https://github.com/Navah-k12/PWA_Service_Worker", demo: "", video: "evidencias/demo-pwa.mp4", evidencias: [] },
   { titulo: "Identity Dissolution", categoria: "Móvil",
     descripcion: "App complementaria del videojuego de terror: Bestiario de monstruos, modelos 3D, realidad aumentada, guías, inventario y reseñas. El Bestiario se guarda en Room y funciona sin internet; los datos vienen de una API propia en Ktor. El acceso usa Firebase Auth (correo y Google) y las reseñas usan Firestore por REST, con CRUD completo. Si el teléfono no tiene ARCore, la AR usa cámara y giroscopio. Arquitectura MVVM con Jetpack Compose. Si falta la configuración de Firebase, la app arranca igual.",
-    tecnologias: ["Kotlin", "Jetpack Compose", "MVVM", "Room", "Retrofit", "Ktor", "Firebase Auth", "Firestore", "ARCore", "CameraX"], repo: "https://github.com/Navah-k12/Identity_DIssolution_AppMovil", demo: "", evidencias: [] },
+    tecnologias: ["Kotlin", "Jetpack Compose", "MVVM", "Room", "Retrofit", "Ktor", "Firebase Auth", "Firestore", "ARCore", "CameraX"], repo: "https://github.com/Navah-k12/Identity_DIssolution_AppMovil", demo: "", video: "evidencias/demo-movil.mp4", evidencias: [] },
+  { titulo: "Fortnite Wiki", categoria: "Móvil",
+    descripcion: "Guía no oficial de Fortnite para Android. Tiene cuatro pestañas: Taquilla, con más de 16 000 cosméticos, búsqueda por nombre y filtros por tipo y rareza; Mapa de la Isla de Batalla con zoom de dos dedos; Noticias; y la Tienda del día con precios en V-Bucks. Los datos vienen de la API fortnite-api.com con Retrofit y corrutinas. La app usa tres capas (data, domain, ui), un ViewModel por pantalla y Jetpack Compose. Los datos sobreviven al giro de pantalla y, si falla la red, cada pantalla muestra el error con un botón para reintentar.",
+    tecnologias: ["Kotlin", "Jetpack Compose", "Material 3", "MVVM", "Retrofit", "Coroutines", "Coil"], repo: "https://github.com/Navah-k12/ForniteWiki", demo: "", video: "evidencias/demo-forniteapp.mp4", evidencias: [] },
   { titulo: "Identity Dissolution · Videojuego", categoria: "Juegos y 3D",
     descripcion: "Videojuego 3D de Survival Horror con elementos roguelite. Disponible para Windows y macOS en itch.io.",
-    tecnologias: ["Unity", "C#", "Survival Horror"], repo: "", demo: "https://galaxyugc.itch.io/identity-dissolution", evidencias: [] },
+    tecnologias: ["Unity", "C#", "Survival Horror"], repo: "", demo: "https://galaxyugc.itch.io/identity-dissolution", video: "evidencias/trailer.mp4", evidencias: [] },
   { titulo: "Monstruos Low-Poly 3D", categoria: "Juegos y 3D",
     descripcion: "Modelos 3D low-poly de los monstruos (Alto, Boca y más) del juego de Survival Horror para el evento de videojuegos de la UT Cancún.",
-    tecnologias: ["3D", "Low-Poly", "Modelado"], repo: "https://github.com/Navah-k12/Low-Poly-3D-Models-for-a-Video-Game-Event", demo: "", evidencias: [] },
+    tecnologias: ["3D", "Low-Poly", "Modelado"], repo: "https://github.com/Navah-k12/Low-Poly-3D-Models-for-a-Video-Game-Event", demo: "", video: "", evidencias: [] },
   { titulo: "CRUD Blindado", categoria: "Ciberseguridad",
     descripcion: "CRUD con NestJS y PostgreSQL: mi primer ejercicio de seguridad en el código. Practiqué dos defensas básicas: consultas parametrizadas, para que el texto del usuario no se ejecute como SQL, y validación de los datos de entrada, que rechaza campos no permitidos. Es un proyecto de aprendizaje: aún le falta autenticación y límite de peticiones.",
-    tecnologias: ["NestJS", "TypeScript", "PostgreSQL", "class-validator"], repo: "https://github.com/Navah-k12/CrudBlindado", demo: "", evidencias: [] }
+    tecnologias: ["NestJS", "TypeScript", "PostgreSQL", "class-validator"], repo: "https://github.com/Navah-k12/CrudBlindado", demo: "", video: "", evidencias: [] }
 ];
 
-// Video de demostración por sección (ruta a .mp4 en evidencias/ o URL). Vacío = muestra un marcador.
-const VIDEOS = {
-  "Web": "evidencias/demo-web.webm",
-  "Móvil": "evidencias/demo-movil.mp4",
-  "Juegos y 3D": "evidencias/trailer.mp4",
-  "Ciberseguridad": ""
-};
+// Video por proyecto: campo 'video' de cada proyecto (ruta a .mp4/.webm en evidencias/ o URL). Vacío = muestra un marcador.
+// VIDEOS toma el video del primer proyecto de cada sección (lo usan las escenas al cargar).
+const VIDEOS = {};
+PROYECTOS.forEach(p => { if (p.video && !VIDEOS[p.categoria]) VIDEOS[p.categoria] = p.video; });
 
 // Tecnologías agrupadas (sección "Tecnología")
 const TECNOLOGIAS = [

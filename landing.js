@@ -17,7 +17,6 @@ const pal = PERFIL.nombre.split(" "), mitad = Math.ceil(pal.length / 2);
 [pal.slice(0, mitad).join(" "), pal.slice(mitad).join(" ")].forEach((t, k) => { const w = el("span", "w"), s = el("span", "", t); s.style.setProperty("--k", k); s.setAttribute("aria-hidden", "true"); w.appendChild(s); h1.appendChild(w); });
 if (PERFIL.foto) { const f = el("img", "retrato-hero rv"); f.src = PERFIL.foto; f.alt = PERFIL.nombre; document.querySelector(".hero-lado").prepend(f); }
 $("clase").textContent = PERFIL.clase; $("bio").textContent = PERFIL.bio;
-PERFIL.links.forEach(l => { const a = el("a", l.icono ? "ico" : "", l.icono ? null : l.texto); a.href = l.url; if (l.icono) { a.setAttribute("aria-label", l.texto); a.title = l.texto; const im = el("img"); im.src = l.icono; im.alt = ""; a.appendChild(im); } if (!l.url.startsWith("mailto")) { a.target = "_blank"; a.rel = "noopener"; } $("links").appendChild(a); });
 const dato = (t, items) => { const f = document.createDocumentFragment(); f.append(el("dt", "", t)); const d = el("dd"); items.forEach((x, i) => { if (i) d.appendChild(document.createElement("br")); d.append(x); }); f.append(d); $("datos").appendChild(f); };
 dato("Educación", PERFIL.educacion.map(e => e.titulo.replace(" (cursando)", "") + " · " + e.lugar));
 dato("Disponibilidad", PERFIL.disponibilidad);
@@ -33,7 +32,8 @@ function escenaWeb(proys) {
   const e = el("div", "escena"), n = el("div", "marco nav-web");
   const vsrc = (typeof VIDEOS !== "undefined" && VIDEOS["Web"]) || "";
   const b = el("div", "barra"); b.append(el("i"), el("i"), el("i")); const url = el("em", "", vsrc ? "invitaciones-web" : "proyecto.web"); b.appendChild(url);
-  if (vsrc) { const vd = el("video"); vd.src = vsrc + "#t=3"; vd.controls = true; vd.muted = true; vd.loop = true; vd.playsInline = true; vd.preload = "metadata"; n.append(b, vd); const cv3 = el("canvas", "c3d"); cv3.dataset.modelo = "navegador"; e.append(n, cv3); e.classList.add("con-video"); return { nodo: e, set() {} }; }
+  if (vsrc) { const vd = el("video"); vd.src = vsrc + "#t=3"; vd.controls = true; vd.muted = true; vd.loop = true; vd.playsInline = true; vd.preload = "metadata"; n.append(b, vd); const cv3 = el("canvas", "c3d"); cv3.dataset.modelo = "navegador"; e.append(n, cv3); e.classList.add("con-video");
+    return { nodo: e, set(pr) { const nom = pr.titulo.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); url.textContent = nom; if (pr.video) { vd.src = pr.video + "#t=3"; n.classList.remove("sin-video"); } else { vd.removeAttribute("src"); vd.load(); n.classList.add("sin-video"); } document.dispatchEvent(new CustomEvent("proyecto", { detail: { sec: "web", p: pr, nombre: nom } })); } }; }
   const p = el("div", "pag"), tit = el("div", "tit", proys[0]?.titulo || ""); p.append(tit, el("div", "linea"), el("div", "linea"), el("div", "linea"));
   const bl = el("div", "bloques"); bl.append(el("b"), el("b"), el("b")); p.appendChild(bl); n.append(b, p); e.appendChild(n);
   return { nodo: e, set(pr) { tit.style.opacity = 0; tit.style.transform = "translateY(8px)"; tit.style.filter = "blur(4px)"; setTimeout(() => { tit.textContent = pr.titulo; url.textContent = pr.titulo.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + ".web"; tit.style.opacity = 1; tit.style.transform = ""; tit.style.filter = ""; }, 350); } };
@@ -44,10 +44,11 @@ function escenaMovil(proys) {
   const f = el("div", "filas"); f.append(el("i"), el("i"), el("i")); t.append(ic, tt, sm, f); e.appendChild(t);
   return { nodo: e, set(pr) { document.dispatchEvent(new CustomEvent("proyecto", { detail: { sec: "movil", p: pr } })); ic.style.transform = "scale(.7)"; tt.style.opacity = 0; setTimeout(() => { ic.textContent = pr.titulo[0]; tt.textContent = pr.titulo; sm.textContent = pr.tecnologias.slice(0, 3).join(" · "); ic.style.transform = ""; tt.style.opacity = 1; }, 300); } };
 }
-function escenaJuegos() {
-  const e = el("div", "escena col"), v = el("figure", "video"), src = (typeof VIDEOS !== "undefined" && VIDEOS["Juegos y 3D"]) || "";
-  if (src) { const vd = el("video"); vd.src = src; vd.controls = true; vd.muted = true; vd.loop = true; vd.playsInline = true; vd.preload = "metadata"; v.appendChild(vd); }
-  const fila = el("div", "fila-3d"); ["control", "arcade"].forEach(m => { const cv = el("canvas", "c3d pix"); cv.dataset.modelo = m; fila.appendChild(cv); }); e.append(v, fila); return { nodo: e, set() {} };
+function escenaJuegos(proys) {
+  const e = el("div", "escena col"), v = el("figure", "video"), vd = el("video"); vd.controls = true; vd.muted = true; vd.loop = true; vd.playsInline = true; vd.preload = "metadata"; v.appendChild(vd);
+  const poner = pr => { if (pr && pr.video) { vd.src = pr.video + "#t=1"; v.classList.remove("vacio"); } else { vd.removeAttribute("src"); vd.load(); v.classList.add("vacio"); } };
+  poner(proys[0]);
+  const fila = el("div", "fila-3d"); ["control", "arcade"].forEach(m => { const cv = el("canvas", "c3d pix"); cv.dataset.modelo = m; fila.appendChild(cv); }); e.append(v, fila); return { nodo: e, set: poner };
 }
 function escenaCiber() {
   const e = el("div", "escena col"), hol = el("div", "holo"), cv = el("canvas", "c3d"), lb = el("small", "holo-lbl", "Autenticación"); cv.dataset.modelo = "holograma"; hol.append(cv, lb); e.appendChild(hol); const t = el("div", "marco term"), b = el("div", "barra"); b.append(el("i"), el("i"), el("i"));
@@ -101,7 +102,9 @@ SECCIONES.forEach(s => {
   if (PERFIL.foto) { const im = el("img"); im.src = PERFIL.foto; im.alt = PERFIL.nombre; fig.appendChild(im); } else { fig.classList.add("vacio"); fig.appendChild(el("span", "", PERFIL.corto.split(" ").map(x => x[0]).join(""))); }
   const tx = el("div"); const h2 = el("h2", "rv", "Sobre mí"); const nm = el("p", "rol rv", PERFIL.nombre); const p = el("p", "bio rv", SOBRE_MI); nm.style.setProperty("--d", ".1s"); p.style.setProperty("--d", ".2s");
   const lema = el("blockquote", "lema rv", PERFIL.lema); lema.style.setProperty("--d", ".3s");
-  tx.append(h2, nm, p, lema); w2.append(fig, tx); s.appendChild(w2); cuerpo.appendChild(s);
+  const box = el("div", "links rv"); box.style.setProperty("--d", ".25s");
+  PERFIL.links.forEach(l => { const a = el("a", l.icono ? "ico" : "", l.icono ? null : l.texto); a.href = l.url; if (l.icono) { a.setAttribute("aria-label", l.texto); a.title = l.texto; const im = el("img"); im.src = l.icono; im.alt = ""; a.appendChild(im); } if (!l.url.startsWith("mailto")) { a.target = "_blank"; a.rel = "noopener"; } box.appendChild(a); });
+  tx.append(h2, nm, p, box, lema); w2.append(fig, tx); s.appendChild(w2); cuerpo.appendChild(s);
 }
 addEventListener("load", () => fijadores.forEach(f => f()));
 document.fonts && document.fonts.ready.then(() => fijadores.forEach(f => f()));

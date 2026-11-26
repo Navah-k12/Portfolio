@@ -47,12 +47,18 @@ function telefono(cv) {
   pantalla.position.z = .0735; v.pivote.add(pantalla);
   // Video de la app grabado en el teléfono (VIDEOS["Móvil"] en proyectos.js). Si no carga, o si se pidió menos movimiento, queda el lienzo.
   const srcVideo = typeof VIDEOS !== "undefined" ? VIDEOS["Móvil"] : "";
+  let ponerVideo = () => {};
   if (srcVideo && !reducir) {
     const vd = document.createElement("video");
     vd.src = srcVideo; vd.muted = true; vd.loop = true; vd.playsInline = true; vd.preload = "auto"; vd.setAttribute("playsinline", "");
     const vtex = new THREE.VideoTexture(vd); vtex.colorSpace = THREE.SRGBColorSpace;
     vd.addEventListener("loadeddata", () => { matPantalla.map = vtex; matPantalla.needsUpdate = true; });
-    new IntersectionObserver(es => { es[0].isIntersecting ? vd.play().catch(() => {}) : vd.pause(); }).observe(cv);
+    let visible = false; new IntersectionObserver(es => { visible = es[0].isIntersecting; visible ? vd.play().catch(() => {}) : vd.pause(); }).observe(cv);
+    // Cambia el video al cambiar de proyecto; sin video, vuelve el lienzo con el título.
+    ponerVideo = pr => {
+      if (pr && pr.video) { if (!vd.src.endsWith(pr.video)) { vd.src = pr.video; } if (visible) vd.play().catch(() => {}); }
+      else { vd.pause(); matPantalla.map = tex; matPantalla.needsUpdate = true; }
+    };
   }
   const lista = (typeof PROYECTOS !== "undefined" ? PROYECTOS : []).filter(p => p.categoria === "Móvil");
   function pintar(p) {
@@ -71,7 +77,7 @@ function telefono(cv) {
   }
   pintar(lista[0]);
   document.fonts && document.fonts.ready.then(() => pintar(lista[0]));
-  document.addEventListener("proyecto", e => { if (e.detail.sec === "movil") pintar(e.detail.p); });
+  document.addEventListener("proyecto", e => { if (e.detail.sec === "movil") { pintar(e.detail.p); ponerVideo(e.detail.p); } });
   correr(v, t => {
     if (!v.arr && !reducir) { v.ry += (Math.sin(t / 2600) * .5 - .3 - v.ry) * .02; v.rx *= .96; }
     v.pivote.rotation.y += (v.ry - v.pivote.rotation.y) * .12; v.pivote.rotation.x += (v.rx + v.my * .3 - v.pivote.rotation.x) * .1;
@@ -88,7 +94,7 @@ function navegador(cv) {
   const cuerpo = new THREE.Mesh(new RoundedBoxGeometry(BW, BH, .14, 6, .1), NEGRO()); v.pivote.add(cuerpo);
   const y0 = BH / 2 - .05;                       // borde superior del contenido
   // barra superior: círculos de colores de Mac y el nombre
-  const nombre = (cv.parentElement.querySelector(".nav-web .barra em") || {}).textContent || "invitaciones-web";
+  let nombre = (cv.parentElement.querySelector(".nav-web .barra em") || {}).textContent || "invitaciones-web";
   const lb = document.createElement("canvas"); lb.width = 1320; lb.height = 88;
   const tb = new THREE.CanvasTexture(lb); tb.colorSpace = THREE.SRGBColorSpace; tb.anisotropy = 4;
   const pintarBarra = () => {
@@ -112,7 +118,16 @@ function navegador(cv) {
     const a = vd.videoWidth / vd.videoHeight, k = SW / SH;
     pant.scale.set(a > k ? 1 : a / k, a > k ? k / a : 1, 1); pant.visible = true;
   });
-  new IntersectionObserver(es => { if (reducir) return; es[0].isIntersecting ? vd.play().catch(() => {}) : vd.pause(); }).observe(cv);
+  let visibleNav = false;
+  new IntersectionObserver(es => { visibleNav = es[0].isIntersecting; if (reducir) return; visibleNav ? vd.play().catch(() => {}) : vd.pause(); }).observe(cv);
+  // Cambia el video y el nombre de la barra al cambiar de proyecto; sin video, la pantalla queda negra.
+  document.addEventListener("proyecto", e => {
+    if (e.detail.sec !== "web") return;
+    nombre = e.detail.nombre || nombre; pintarBarra();
+    const pr = e.detail.p;
+    if (pr && pr.video) { pant.visible = false; vd.src = pr.video + (reducir ? "#t=3" : ""); if (visibleNav && !reducir) vd.play().catch(() => {}); }
+    else { vd.pause(); pant.visible = false; }
+  });
   correr(v, t => {
     if (!v.arr && !reducir) { v.ry += (Math.sin(t / 2600) * .26 - .1 - v.ry) * .02; v.rx *= .96; }
     v.pivote.rotation.y += (v.ry - v.pivote.rotation.y) * .12; v.pivote.rotation.x += (v.rx + v.my * .3 - v.pivote.rotation.x) * .1;
