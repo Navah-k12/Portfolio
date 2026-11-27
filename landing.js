@@ -16,7 +16,7 @@ const h1 = $("nombre"); h1.setAttribute("aria-label", PERFIL.nombre);
 const pal = PERFIL.nombre.split(" "), mitad = Math.ceil(pal.length / 2);
 const lineas = [pal.slice(0, mitad).join(" "), pal.slice(mitad).join(" ")];
 // Dos capas con el mismo texto: "dim" (casi invisible) y "on" (se ve solo donde alumbra la linterna)
-["dim", "on"].forEach(k => { const cap = el("span", "cap " + k); cap.setAttribute("aria-hidden", "true"); lineas.forEach((t, i) => { const l = el("span", "l", t); l.style.setProperty("--k", i); cap.appendChild(l); }); h1.appendChild(cap); });
+["dim", "on"].forEach(k => { const cap = el("span", "cap " + k); cap.setAttribute("aria-hidden", "true"); let n = 0; lineas.forEach((t, i) => { const l = el("span", "l"); [...t].forEach(c => { if (c === " ") { l.append(" "); return; } const ch = el("span", "ch", c); ch.style.setProperty("--c", n++); l.appendChild(ch); }); l.style.setProperty("--k", i); cap.appendChild(l); }); h1.appendChild(cap); });
 $("clase").textContent = PERFIL.clase;
 PERFIL.disponibilidad.forEach(x => $("datos").appendChild(el("p", "", x)));
 // Atajos a las secciones
@@ -53,7 +53,6 @@ else {
 const menu = $("menu");
 SECCIONES.forEach(s => { const a = el("a", "", s.id === "juegos" ? "Videojuegos" : s.id === "ciber" ? "Hacking" : s.id === "movil" ? "Móvil" : "Web"); a.href = "#" + s.id; a.dataset.id = s.id; menu.appendChild(a); });
 [["tecnologias","Tecnología"],["sobre-mi","Sobre mí"]].forEach(([id,t])=>{const a=el("a","",t);a.href="#"+id;a.dataset.id=id;menu.appendChild(a)});
-const cont = el("a", "", "Contacto"); cont.href = PERFIL.links.find(l => l.url.startsWith("mailto"))?.url || "#"; menu.appendChild(cont);
 
 // ---- Escenas por sección ----
 function escenaWeb(proys) {

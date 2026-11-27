@@ -11,6 +11,8 @@ h1.nombre-luz{position:absolute;z-index:2;left:clamp(20px,5vw,72px);top:clamp(78
 .nombre-luz .on{color:#fff}
 .js .nombre-luz,.js .atajos,.hero .rv{opacity:1;transform:none}
 
+/* atajos de abajo: ocultos, el menú de arriba a la derecha ya tiene los mismos enlaces */
+.atajos{display:none!important}
 /* atajos (también sirven con teclado y lector de pantalla) */
 .atajos{position:absolute;z-index:3;left:50%;bottom:clamp(22px,4vh,40px);transform:translateX(-50%);display:flex;gap:clamp(14px,2.4vw,34px);list-style:none;margin:0;padding:0}
 .atajos a{display:inline-flex;align-items:baseline;gap:7px;text-decoration:none;font:500 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:#a8a8a8;padding:6px 2px;transition:color .3s}
@@ -58,7 +60,20 @@ h1.nombre-luz{position:absolute;z-index:2;left:clamp(20px,5vw,72px);top:clamp(78
 .rc-flash.on{opacity:1}
 .sin-3d #rocas3d{display:none}
 
+/* ---- Entrada en orden (la secuencia la lanza rocas.js al terminar de cargar) ---- */
+.nav{transition:color .6s,opacity 1s ease}
+.esquina{transition:opacity 1.2s ease}
+html.rc:not(.rc-menu) .nav,html.rc:not(.rc-nombre) .hero h1.nombre-luz,html.rc:not(.rc-esq) .esquina{opacity:0}
+@media(prefers-reduced-motion:reduce){.nav,.esquina{transition-duration:.01s}}
+
+/* Letras del nombre: cada una se desvanece hasta verse, una tras otra (--c = su orden) */
+.nombre-luz .ch{display:inline-block;opacity:0;transition:opacity 1.4s ease;transition-delay:calc(var(--c) * .07s)}
+html:not(.rc) h1.nombre-luz.in .ch,html.rc-nombre .nombre-luz .ch{opacity:1}
+@media(prefers-reduced-motion:reduce){.nombre-luz .ch{transition:none;opacity:1}}
+
 /* ---- Cada sección se abre como panel sobre el inicio (sin bajar la página) ---- */
+/* Mientras carga rocas.js, las secciones quedan ocultas y fuera del flujo para que no se vea el panel un instante */
+html.rc .sec:not(.rc-panel){position:absolute;left:0;right:0;visibility:hidden;pointer-events:none}
 .hero{transition:none}
 .hero h1.nombre-luz{transition:opacity .6s}
 .hero.rc-abierto h1.nombre-luz{opacity:.15}

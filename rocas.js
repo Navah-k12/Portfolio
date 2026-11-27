@@ -15,14 +15,14 @@ if (hero && cv && typeof SECCIONES !== "undefined") iniciar();
 function iniciar() {
   const reducir = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let renderer;
-  try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true }); } catch (e) { hero.classList.add("sin-3d"); return; }
+  try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true }); } catch (e) { hero.classList.add("sin-3d"); document.documentElement.classList.remove("rc"); return; }
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.setClearColor(0x02030a);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   const scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x050a18, 0.014);
   const cam = new THREE.PerspectiveCamera(48, 1, .1, 160);
-  let t = 0; const T0 = performance.now(); // t = segundos desde que carga la página (reloj real)
+  let t = 0, T0 = performance.now(); // t = segundos desde que carga la página (reloj real)
 
   // ---- Los descansos: uno por sección. Edita nombre y color aquí. ----
   const PASOS = [
@@ -127,7 +127,7 @@ function iniciar() {
     const tx = new THREE.VideoTexture(vd); tx.colorSpace = THREE.SRGBColorSpace;
     const lista = PROYECTOS.filter(p => p.categoria === cat);
     let src = (lista[0] && (lista[0].video3d || lista[0].video)) || (typeof VIDEOS !== "undefined" && VIDEOS[cat]) || "", activo = false;
-    const poner = () => { if (!src) return; vd.preload = "auto"; const u = src + (reducir ? "#t=1" : ""); if (vd.getAttribute("src") !== u) vd.src = u; if (activo && !reducir) vd.play().catch(() => {}); };
+    const poner = () => { if (!src) return; vd.preload = "auto"; const u = src + (reducir ? "#t=1" : ""); if (vd.getAttribute("src") !== u) vd.src = u; else if (vd.readyState >= 2) cargado(vd, tx); /* mismo video ya cargado: muestra la pantalla otra vez */ if (activo && !reducir) vd.play().catch(() => {}); };
     vd.addEventListener("loadeddata", () => cargado(vd, tx));
     document.addEventListener("proyecto", e => { if (e.detail.sec !== sec) return; src = (e.detail.p && (e.detail.p.video3d || e.detail.p.video)) || ""; if (src) { if (activo) poner(); } else { vd.pause(); cargado(null, null); } });
     // Precarga tranquila al terminar de cargar la página, para que el video ya esté listo al elegir el escalón.
@@ -148,9 +148,10 @@ function iniciar() {
     const barra = new THREE.Mesh(new THREE.PlaneGeometry(SW, BARRA), new THREE.MeshBasicMaterial({ map: tb })); barra.position.set(0, y0 - BARRA / 2, ZF + .002); real.add(barra);
     const fondo = new THREE.Mesh(new THREE.PlaneGeometry(SW, SH), new THREE.MeshBasicMaterial({ color: 0x050506 })); fondo.position.set(0, cy, ZF + .002); real.add(fondo);
     const pantMat = new THREE.MeshBasicMaterial({ color: 0xffffff }), pant = new THREE.Mesh(new THREE.PlaneGeometry(SW, SH), pantMat); pant.position.set(0, cy, ZF + .004); pant.visible = false; real.add(pant);
-    const vid = videoDe("Web", "web", (vd, tx) => { if (!vd) { pant.visible = false; return; } pantMat.map = tx; pantMat.needsUpdate = true; const a = vd.videoWidth / vd.videoHeight, k = SW / SH; pant.scale.set(a > k ? 1 : a / k, a > k ? k / a : 1, 1); pant.visible = true; });
+    let listo = false, encendido = false;   // la pantalla se enciende la primera vez que eliges el descanso y ya no se apaga (antes se ve negra, como el teléfono)
+    const vid = videoDe("Web", "web", (vd, tx) => { if (!vd) { listo = false; pant.visible = false; return; } pantMat.map = tx; pantMat.needsUpdate = true; const a = vd.videoWidth / vd.videoHeight, k = SW / SH; pant.scale.set(a > k ? 1 : a / k, a > k ? k / a : 1, 1); listo = true; });
     it.tick = (tt, dt) => {
-      real.scale.setScalar(.7 + .3 * it.t); vid.activar(it.t > .3);
+      real.scale.setScalar(.7 + .3 * it.t); vid.activar(it.t > .3); if (it.t > .3) encendido = true; pant.visible = listo && encendido;
       real.rotation.y = reducir ? -.1 : Math.sin(tt * .38) * .26 - .1; real.position.y = 1.55 + (reducir ? 0 : Math.sin(tt * 1.1) * .05);
     }; }
   // 2 · Móvil: un teléfono 3D con el video de la app. El marco de línea queda como adelanto hasta que eliges el descanso.
@@ -299,9 +300,6 @@ function iniciar() {
     if (typeof vis !== "undefined" && vis.unobserve) vis.unobserve(sc); // el resaltado del menú lo controla este archivo, no el desplazamiento
     const b = el("button", "rc-volver", "← Volver a la escalera"); b.type = "button"; b.addEventListener("click", () => elegir(-1)); sc.prepend(b);
   });
-  // atajos de abajo: los 2 descansos nuevos también
-  const atajosUl = document.getElementById("atajos");
-  if (atajosUl) PASOS.slice(SECCIONES.length).forEach((p, j) => { const li = el("li"), a = el("a"); a.href = "#" + p.id; a.style.setProperty("--c", p.color); a.append(el("i", "n", "0" + (SECCIONES.length + j + 1)), el("span", "", p.nombre)); li.appendChild(a); atajosUl.appendChild(li); });
 
   // ---- Selección y tarjeta (la tarjeta es solo para la puerta) ----
   let sel = -1, hov = -1;
@@ -309,7 +307,7 @@ function iniciar() {
   const boton = (tx, a, f) => { const b = document.createElement("button"); b.type = "button"; b.textContent = tx; b.ariaLabel = a; b.addEventListener("click", f); return b; };
   nav.append(boton("‹", "Escalón anterior", () => ir(-1)));
   const correo = (PERFIL.links.find(l => l.url.startsWith("mailto")) || {}).url || "#";
-  const cN = el("p", "rc-n", "Al final del camino"), cT = el("h2", "", "La puerta"), cS = el("p", "rc-s", "No sé si llegaré. Cada escalón es algo que aprendí y el camino sigue. " + (PERFIL.lema || "")), cA = el("a", "rc-go", "Escríbeme →"); cA.href = correo;
+  const cN = el("p", "rc-n", "Al final del camino"), cT = el("h2", "", "La puerta"), cS = el("p", "rc-s", "Es un camino por descubrir. Cada escalón es un reto que me toca aprender para seguir avanzando y lograr mis metas."), cA = el("a", "rc-go", "Escríbeme →"); cA.href = correo;
   card.append(cN, cT, cS, cA, nav);
   const pistaR = document.querySelector(".p-raton"), pistaT = document.querySelector(".p-tactil");
   if (pistaR) pistaR.textContent = "Haz clic en un escalón"; if (pistaT) pistaT.textContent = "Toca un escalón";
@@ -381,8 +379,21 @@ function iniciar() {
   let visible = true, ultimo = performance.now();
   new IntersectionObserver(es => { visible = es[0].isIntersecting; ultimo = performance.now(); }).observe(hero);
   const tmp = new THREE.Color();
+  // Entrada en orden: nada se muestra hasta que el 3D y las fuentes están listos. Luego aparecen, uno tras otro:
+  // menú → escalones (de abajo hacia arriba) → nombre → textos de las esquinas. Las clases rc-* las usa rocas.css.
+  let listo = false, cuadros = 0, fuentes = !document.fonts;
+  if (document.fonts) document.fonts.ready.then(() => { fuentes = true; });
+  function arrancar(ahora) {
+    listo = true; T0 = ahora;
+    const R = document.documentElement, m = reducir ? 0 : 1, en = (c, ms) => setTimeout(() => R.classList.add(c), ms * m);
+    R.classList.add("rc-listo"); en("rc-menu", 0); en("rc-nombre", 1300); en("rc-esq", 2100);
+    document.dispatchEvent(new Event("rocas-listo"));
+  }
   (function bucle(ahora) {
-    requestAnimationFrame(bucle); if (!visible) return;
+    if (ahora === undefined) ahora = performance.now();
+    requestAnimationFrame(bucle);
+    if (!listo) { T0 = ahora; if (++cuadros >= 3 && fuentes) arrancar(ahora); }   // antes de arrancar, t queda en 0 y los escalones siguen ocultos
+    if (!visible) return;
     const dt = Math.min((ahora - ultimo) / 1000, .05); ultimo = ahora; t = (ahora - T0) / 1000;
     if (mueve) { mueve = false; const h = golpe(); if (h !== hov) { hov = h; cv.classList.toggle("sobre", h >= 0); } }
     const k = reducir ? 1 : 1 - Math.exp(-dt * 2.8), ka = reducir ? 1 : 1 - Math.exp(-dt * 7), kc = reducir ? 1 : 1 - Math.exp(-dt * 5);
