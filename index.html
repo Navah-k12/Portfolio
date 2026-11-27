@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bryan Navarrete · Desarrollo de software</title>
+<title>Rocas · Bryan Navarrete</title>
 <meta name="description" content="Portafolio de Bryan Navarrete: desarrollo web, apps móviles, videojuegos y ciberseguridad.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="landing.css?v=23">
+<link rel="stylesheet" href="landing.css?v=30"><link rel="stylesheet" href="rocas.css?v=9">
 <script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
@@ -18,15 +18,17 @@
 </header>
 
 <section id="inicio" class="hero" data-tema="hero">
-  <div class="wrap hero-grid">
-    <h1 id="nombre" aria-label=""></h1>
-    <div class="hero-lado">
-      <p class="rol rv" id="clase"></p>
-      <p class="bio rv" id="bio"></p>
-    </div>
-    <dl class="datos rv" id="datos"></dl>
+  <canvas id="rocas3d" aria-hidden="true"></canvas>
+  <div class="rc-card" id="rc-card" aria-live="polite"></div>
+  <h1 id="nombre" class="nombre-luz"></h1>
+  <ul class="atajos" id="atajos" aria-label="Ir a una sección"></ul>
+  <div class="esquina izq rv">
+    <p class="rol" id="clase"></p>
+    <div id="datos"></div>
   </div>
-  <a class="baja" href="#web" aria-label="Ir a la primera sección"><span></span></a>
+  <div class="esquina der rv">
+    <p class="pista"><span class="p-raton">Mueve el ratón para alumbrar</span><span class="p-tactil">Arrastra el dedo para alumbrar</span></p>
+  </div>
 </section>
 
 <main id="secciones"></main>
@@ -36,9 +38,11 @@
   <a href="#inicio">Volver arriba</a>
 </footer>
 
-<script src="proyectos.js?v=20"></script>
-<script src="landing.js?v=20"></script>
+<script src="proyectos.js?v=21"></script>
+<script src="landing.js?v=26"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <script type="module" src="escenas3d.js?v=15"></script>
+<script type="module" src="monstruos.js?v=2"></script>
+<script type="module" src="rocas.js?v=17"></script>
 </body>
 </html>

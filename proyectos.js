@@ -53,10 +53,10 @@ const PROYECTOS = [
     tecnologias: ["Kotlin", "Jetpack Compose", "Material 3", "MVVM", "Retrofit", "Coroutines", "Coil"], repo: "https://github.com/Navah-k12/ForniteWiki", demo: "", video: "evidencias/demo-forniteapp.mp4", evidencias: [] },
   { titulo: "Identity Dissolution · Videojuego", categoria: "Juegos y 3D",
     descripcion: "Videojuego 3D de Survival Horror con elementos roguelite. Disponible para Windows y macOS en itch.io.",
-    tecnologias: ["Unity", "C#", "Survival Horror"], repo: "", demo: "https://galaxyugc.itch.io/identity-dissolution", video: "evidencias/trailer.mp4", evidencias: [] },
+    tecnologias: ["Unity", "C#", "Survival Horror"], repo: "", demo: "https://galaxyugc.itch.io/identity-dissolution", video: "evidencias/trailer.mp4", video3d: "evidencias/trailer-720.mp4", evidencias: [] },
   { titulo: "Monstruos Low-Poly 3D", categoria: "Juegos y 3D",
     descripcion: "Modelos 3D low-poly de los monstruos (Alto, Boca y más) del juego de Survival Horror para el evento de videojuegos de la UT Cancún.",
-    tecnologias: ["3D", "Low-Poly", "Modelado"], repo: "https://github.com/Navah-k12/Low-Poly-3D-Models-for-a-Video-Game-Event", demo: "", video: "", evidencias: [] },
+    tecnologias: ["3D", "Low-Poly", "Modelado"], repo: "https://github.com/Navah-k12/Low-Poly-3D-Models-for-a-Video-Game-Event", demo: "", video: "", modelos: true, evidencias: [] },
   { titulo: "CRUD Blindado", categoria: "Ciberseguridad",
     descripcion: "CRUD con NestJS y PostgreSQL: mi primer ejercicio de seguridad en el código. Practiqué dos defensas básicas: consultas parametrizadas, para que el texto del usuario no se ejecute como SQL, y validación de los datos de entrada, que rechaza campos no permitidos. Es un proyecto de aprendizaje: aún le falta autenticación y límite de peticiones.",
     tecnologias: ["NestJS", "TypeScript", "PostgreSQL", "class-validator"], repo: "https://github.com/Navah-k12/CrudBlindado", demo: "", video: "", evidencias: [] }

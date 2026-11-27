@@ -298,3 +298,11 @@ h1 .w:nth-child(1) span,h1 .w:nth-child(2) span{color:#fff;background:none;text-
 .video.vacio video{display:none}
 .video.vacio::after{content:"Video próximamente";font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:#8a8a8a}
 .nav-web.sin-video video{visibility:hidden}
+
+/* Videojuegos: visor 3D de los monstruos (se muestra en el proyecto "Monstruos Low-Poly 3D") */
+.mons-visor{display:none;position:relative;flex-direction:column;width:100%;aspect-ratio:16/10;border:0;background:none;overflow:hidden;color:#efe9f7}
+.escena.ver-mons .mons-visor{display:flex}
+.escena.ver-mons .video{display:none}
+.mons-visor canvas{flex:1;min-height:0;width:100%;display:block;cursor:grab;touch-action:pan-y}
+.mons-visor canvas:active{cursor:grabbing}
+.mons-pista{position:absolute;top:12px;left:14px;font:500 10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#8d8d8d;pointer-events:none}

@@ -14,12 +14,40 @@ $("marca").textContent = PERFIL.corto;
 $("pie").textContent = PERFIL.nombre; $("anio").textContent = new Date().getFullYear();
 const h1 = $("nombre"); h1.setAttribute("aria-label", PERFIL.nombre);
 const pal = PERFIL.nombre.split(" "), mitad = Math.ceil(pal.length / 2);
-[pal.slice(0, mitad).join(" "), pal.slice(mitad).join(" ")].forEach((t, k) => { const w = el("span", "w"), s = el("span", "", t); s.style.setProperty("--k", k); s.setAttribute("aria-hidden", "true"); w.appendChild(s); h1.appendChild(w); });
-if (PERFIL.foto) { const f = el("img", "retrato-hero rv"); f.src = PERFIL.foto; f.alt = PERFIL.nombre; document.querySelector(".hero-lado").prepend(f); }
-$("clase").textContent = PERFIL.clase; $("bio").textContent = PERFIL.bio;
-const dato = (t, items) => { const f = document.createDocumentFragment(); f.append(el("dt", "", t)); const d = el("dd"); items.forEach((x, i) => { if (i) d.appendChild(document.createElement("br")); d.append(x); }); f.append(d); $("datos").appendChild(f); };
-dato("Educación", PERFIL.educacion.map(e => e.titulo.replace(" (cursando)", "") + " · " + e.lugar));
-dato("Disponibilidad", PERFIL.disponibilidad);
+const lineas = [pal.slice(0, mitad).join(" "), pal.slice(mitad).join(" ")];
+// Dos capas con el mismo texto: "dim" (casi invisible) y "on" (se ve solo donde alumbra la linterna)
+["dim", "on"].forEach(k => { const cap = el("span", "cap " + k); cap.setAttribute("aria-hidden", "true"); lineas.forEach((t, i) => { const l = el("span", "l", t); l.style.setProperty("--k", i); cap.appendChild(l); }); h1.appendChild(cap); });
+$("clase").textContent = PERFIL.clase;
+PERFIL.disponibilidad.forEach(x => $("datos").appendChild(el("p", "", x)));
+// Atajos a las secciones
+const NOMBRE_TEMA = { web: "Web", movil: "Móvil", juegos: "Videojuegos", ciber: "Hacking" }, COLOR_TEMA = { web: "#3b82f6", movil: "#22c55e", juegos: "#ffffff", ciber: "#ef4444" };
+const atajos = $("atajos");
+SECCIONES.forEach((s, k) => {
+  const n = PROYECTOS.filter(p => p.categoria === s.cat).length, li = el("li"), a = el("a");
+  a.href = "#" + s.id; a.style.setProperty("--c", COLOR_TEMA[s.id]);
+  a.append(el("i", "n", "0" + (k + 1)), el("span", "", NOMBRE_TEMA[s.id]), el("i", "c", String(n)));
+  li.appendChild(a); atajos.appendChild(li);
+});
+// ---- Linterna: la luz sigue al puntero (al dedo en móvil). Sin puntero, pasea sola. ----
+const hero = document.querySelector(".hero"), LUZ = window.LUZ = { x: .62, y: .45, manual: false };
+if (reducir) { hero.classList.add("todo-luz"); LUZ.x = .4; LUZ.y = .4; }
+else {
+  let mx = 0, my = 0, cx = null, cy = null, visible = true; const t0 = performance.now();
+  const mover = e => { const r = hero.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; LUZ.manual = true; };
+  hero.addEventListener("pointermove", mover, { passive: true }); hero.addEventListener("pointerdown", mover, { passive: true });
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(hero);
+  (function luz(ahora) {
+    requestAnimationFrame(luz); if (!visible) return;
+    const r = hero.getBoundingClientRect(), w = r.width, h = r.height, t = (ahora - t0) / 1000;
+    const tx = LUZ.manual ? mx : w * (.5 + .34 * Math.sin(t * .7)), ty = LUZ.manual ? my : h * (.46 + .2 * Math.sin(t * 1.1 + 1));
+    if (cx === null) { cx = tx; cy = ty; }
+    cx += (tx - cx) * .14; cy += (ty - cy) * .14;
+    const n = h1.getBoundingClientRect();
+    hero.style.setProperty("--mx", cx.toFixed(1) + "px"); hero.style.setProperty("--my", cy.toFixed(1) + "px");
+    h1.style.setProperty("--nx", (cx + r.left - n.left).toFixed(1) + "px"); h1.style.setProperty("--ny", (cy + r.top - n.top).toFixed(1) + "px");
+    LUZ.x = cx / w; LUZ.y = cy / h;
+  })(performance.now());
+}
 
 // ---- Menú ----
 const menu = $("menu");
@@ -45,10 +73,16 @@ function escenaMovil(proys) {
   return { nodo: e, set(pr) { document.dispatchEvent(new CustomEvent("proyecto", { detail: { sec: "movil", p: pr } })); ic.style.transform = "scale(.7)"; tt.style.opacity = 0; setTimeout(() => { ic.textContent = pr.titulo[0]; tt.textContent = pr.titulo; sm.textContent = pr.tecnologias.slice(0, 3).join(" · "); ic.style.transform = ""; tt.style.opacity = 1; }, 300); } };
 }
 function escenaJuegos(proys) {
-  const e = el("div", "escena col"), v = el("figure", "video"), vd = el("video"); vd.controls = true; vd.muted = true; vd.loop = true; vd.playsInline = true; vd.preload = "metadata"; v.appendChild(vd);
-  const poner = pr => { if (pr && pr.video) { vd.src = pr.video + "#t=1"; v.classList.remove("vacio"); } else { vd.removeAttribute("src"); vd.load(); v.classList.add("vacio"); } };
+  const e = el("div", "escena col"), v = el("figure", "video"), vd = el("video"); vd.controls = true; vd.muted = true; vd.loop = true; vd.playsInline = true; vd.preload = "auto"; v.appendChild(vd);
+  const vis = el("div", "mons-visor");
+  const poner = pr => {
+    const m = !!(pr && pr.modelos); e.classList.toggle("ver-mons", m);
+    if (m) vd.pause();
+    else if (pr && pr.video) { vd.src = (pr.video3d || pr.video) + "#t=1"; v.classList.remove("vacio"); } else { vd.removeAttribute("src"); vd.load(); v.classList.add("vacio"); }
+    document.dispatchEvent(new CustomEvent("proyecto", { detail: { sec: "juegos", p: pr } }));
+  };
   poner(proys[0]);
-  const fila = el("div", "fila-3d"); ["control", "arcade"].forEach(m => { const cv = el("canvas", "c3d pix"); cv.dataset.modelo = m; fila.appendChild(cv); }); e.append(v, fila); return { nodo: e, set: poner };
+  const fila = el("div", "fila-3d"); ["control", "arcade"].forEach(m => { const cv = el("canvas", "c3d pix"); cv.dataset.modelo = m; fila.appendChild(cv); }); e.append(v, vis, fila); return { nodo: e, set: poner };
 }
 function escenaCiber() {
   const e = el("div", "escena col"), hol = el("div", "holo"), cv = el("canvas", "c3d"), lb = el("small", "holo-lbl", "Autenticación"); cv.dataset.modelo = "holograma"; hol.append(cv, lb); e.appendChild(hol); const t = el("div", "marco term"), b = el("div", "barra"); b.append(el("i"), el("i"), el("i"));
@@ -114,7 +148,7 @@ addEventListener("resize", () => fijadores.forEach(f => f()));
 // Cada parte (.rv) aparece cuando ella misma entra en pantalla; la sección también se marca (subrayados y terminal).
 const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .2, rootMargin: "0px 0px -8% 0px" });
 document.querySelectorAll(".sec,.hero,h1,.sec .rv").forEach(n => io.observe(n));
-requestAnimationFrame(() => { h1.classList.add("in"); document.querySelectorAll(".hero .rv").forEach((n, k) => { n.style.setProperty("--d", (.5 + k * .12) + "s"); n.classList.add("in"); }); });
+requestAnimationFrame(() => { h1.classList.add("in"); atajos.classList.add("in"); document.querySelectorAll(".hero .rv").forEach((n, k) => { n.style.setProperty("--d", (.5 + k * .12) + "s"); n.classList.add("in"); }); });
 const root = document.documentElement;
 const vis = new IntersectionObserver(es => es.forEach(e => {
   if (!e.isIntersecting) return;
@@ -146,6 +180,7 @@ if (!reducir) (function centrar() {
   function objetivo() {
     let mejor = null;
     secs.forEach(s => {
+      if (s.classList.contains("rc-panel")) return; // panel de sección del inicio "rocas": no se centra
       const r = s.getBoundingClientRect(); if (r.height > innerHeight * 1.4) return; // mucho más alta que la pantalla: no se centra
       const y = Math.max(0, Math.min(root.scrollHeight - innerHeight, scrollY + r.top + r.height / 2 - innerHeight / 2));
       const d = Math.abs(y - scrollY);

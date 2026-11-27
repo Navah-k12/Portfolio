@@ -1,0 +1,99 @@
+/* ---- Inicio: camino de rocas flotantes. Cada roca es una sección y cambia de color al elegirla. ---- */
+.hero{display:block;padding:0;overflow:hidden;min-height:100svh;background:radial-gradient(70% 60% at 50% 40%,#0a0f1c,#02030a 80%);touch-action:pan-y;--sel:#3b82f6}
+#rocas3d{position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block;cursor:grab}
+#rocas3d.sobre{cursor:pointer}
+
+/* nombre arriba, siempre legible */
+h1.nombre-luz{position:absolute;z-index:2;left:clamp(20px,5vw,72px);top:clamp(78px,12vh,120px);transform:none;font:600 clamp(30px,5.2vw,86px)/.98 var(--disp);letter-spacing:-.045em;margin:0;pointer-events:none;color:#fff;text-shadow:0 0 .5em rgba(120,170,255,.35)}
+.nombre-luz .cap{display:block}
+.nombre-luz .l{display:block;white-space:nowrap}
+.nombre-luz .dim{display:none}
+.nombre-luz .on{color:#fff}
+.js .nombre-luz,.js .atajos,.hero .rv{opacity:1;transform:none}
+
+/* atajos (también sirven con teclado y lector de pantalla) */
+.atajos{position:absolute;z-index:3;left:50%;bottom:clamp(22px,4vh,40px);transform:translateX(-50%);display:flex;gap:clamp(14px,2.4vw,34px);list-style:none;margin:0;padding:0}
+.atajos a{display:inline-flex;align-items:baseline;gap:7px;text-decoration:none;font:500 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:#a8a8a8;padding:6px 2px;transition:color .3s}
+.atajos .n,.atajos .c{font-style:normal;font-size:9.5px;letter-spacing:.1em;color:#6a6a6a;transition:color .3s}
+.atajos a:hover,.atajos a:focus-visible,.atajos a.act{color:var(--c)}
+.atajos a:hover .n,.atajos a.act .n{color:var(--c)}
+
+/* esquinas */
+.esquina{position:absolute;bottom:clamp(22px,4vh,40px);z-index:3;font:500 11px/1.7 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#8d8d8d;pointer-events:none}
+.esquina.izq{left:clamp(16px,4vw,56px)}
+.esquina.der{right:clamp(16px,4vw,56px);text-align:right}
+.esquina p,.esquina #datos p{margin:0}
+.esquina .rol{margin:0 0 4px;font:inherit;letter-spacing:inherit;color:#cfcfcf}
+.pista{opacity:.6}
+.p-tactil{display:none}
+@media(hover:none){.p-raton{display:none}.p-tactil{display:inline}}
+
+/* tarjeta de la roca elegida */
+.rc-card{position:absolute;z-index:3;right:clamp(16px,5vw,80px);top:50%;transform:translateY(-50%);width:min(340px,86vw);padding:22px 24px 24px;border:1px solid color-mix(in srgb,var(--sel) 55%,transparent);border-radius:16px;background:rgba(4,6,12,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 0 40px -10px var(--sel);opacity:0;pointer-events:none;transition:opacity .5s,border-color .5s,box-shadow .5s}
+.rc-card.on{opacity:1;pointer-events:auto}
+.rc-card .rc-n{font:500 11px var(--mono);letter-spacing:.2em;color:var(--sel);margin:0 0 10px}
+.rc-card h2{font:600 clamp(26px,3vw,36px)/1.05 var(--disp);letter-spacing:-.03em;margin:0 0 10px;color:#fff}
+.rc-card p.rc-s{font:400 14px/1.5 var(--mono);color:#b9bdc7;margin:0 0 18px}
+.rc-card a.rc-go{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;background:var(--sel);color:#04060c;font:600 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;transition:transform .25s,filter .25s}
+.rc-card a.rc-go:hover,.rc-card a.rc-go:focus-visible{transform:translateX(3px);filter:brightness(1.15)}
+.rc-nav{display:flex;gap:8px;margin-top:16px}
+.rc-nav button{background:none;border:1px solid rgba(255,255,255,.28);color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:15px;line-height:1;transition:background .3s,color .3s}
+.rc-nav button:hover,.rc-nav button:focus-visible{background:#fff;color:#000}
+
+@media(max-width:800px){
+  h1.nombre-luz{font-size:8.4vw;top:74px;left:16px}
+  .rc-card{right:auto;left:50%;top:auto;bottom:112px;transform:translateX(-50%);width:min(360px,calc(100vw - 28px));padding:16px 18px 18px}
+  .rc-card h2{font-size:24px}
+  .rc-card p.rc-s{font-size:13px;margin-bottom:12px}
+  .atajos{bottom:64px;gap:12px}
+  .atajos .c{display:none}
+  .esquina.izq{max-width:54vw;font-size:10px}
+  .esquina.izq #datos{display:none}
+  .esquina.der{display:none}
+}
+@media(prefers-reduced-motion:reduce){.rc-card{transition-duration:.01s}}
+
+/* destello blanco al cruzar la puerta */
+.rc-flash{position:absolute;inset:0;z-index:5;background:#fff;opacity:0;pointer-events:none;transition:opacity .8s ease-in}
+.rc-flash.on{opacity:1}
+.sin-3d #rocas3d{display:none}
+
+/* ---- Cada sección se abre como panel sobre el inicio (sin bajar la página) ---- */
+.hero{transition:none}
+.hero h1.nombre-luz{transition:opacity .6s}
+.hero.rc-abierto h1.nombre-luz{opacity:.15}
+.sec.rc-panel{position:fixed;top:58px;right:0;bottom:0;width:min(780px,62vw);min-height:0;display:block;padding:0 0 48px;border:0;border-left:1px solid rgba(255,255,255,.1);overflow-y:auto;overflow-x:hidden;z-index:6;background:rgba(5,7,13,.84);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transform:translateX(125%);visibility:hidden;pointer-events:none;transition:transform .7s var(--ease),visibility 0s .7s}
+.sec.rc-panel.rc-abierta{transform:none;visibility:visible;pointer-events:auto;transition:transform .7s var(--ease) .15s,visibility 0s 0s}
+.sec.rc-panel .wrap{width:calc(100% - clamp(28px,5vw,60px))}
+.sec.rc-panel .sec-grid{grid-template-columns:minmax(0,1fr);gap:26px;align-items:start}
+.sec.rc-panel .sec-izq{order:-1}
+.sec.rc-panel h2{font-size:clamp(32px,3.6vw,54px);margin-bottom:10px}
+.rc-volver{position:sticky;top:0;z-index:3;display:block;margin:0 0 14px auto;padding:9px 16px;background:rgba(5,7,13,.9);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:0 0 0 14px;border-top:0;border-right:0;font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .3s,color .3s}
+.rc-volver:hover,.rc-volver:focus-visible{background:#fff;color:#000}
+@media(max-width:800px){.sec.rc-panel{top:54px;width:100%;border-left:0;background:rgba(5,7,13,.94)}}
+@media(prefers-reduced-motion:reduce){.sec.rc-panel,.sec.rc-panel.rc-abierta{transition-duration:.01s!important}}
+
+/* Web y Móvil: su modelo 3D (navegador y teléfono) aparece sobre el escalón; el visor duplicado del panel se oculta */
+#web.rc-panel .escena,#movil.rc-panel .escena{display:none}
+
+/* Sobre mí: la frase va a la derecha de la foto; el resto del texto queda debajo */
+#sobre-mi.rc-panel .sec-grid{grid-template-columns:minmax(110px,200px) minmax(0,1fr);align-items:center;column-gap:clamp(18px,3vw,36px)}
+#sobre-mi.rc-panel .sec-grid>div{display:contents}
+#sobre-mi.rc-panel h2{grid-column:1/-1;grid-row:1}
+#sobre-mi.rc-panel .retrato{grid-column:1;grid-row:2;max-width:200px}
+#sobre-mi.rc-panel .lema{grid-column:2;grid-row:2;margin-top:0;font-size:clamp(18px,2vw,26px)}
+#sobre-mi.rc-panel .rol,#sobre-mi.rc-panel .bio,#sobre-mi.rc-panel .links{grid-column:1/-1}
+
+/* Hacking: el candado ya está sobre el escalón; el holograma duplicado del panel se oculta */
+#ciber.rc-panel .holo{display:none}
+
+/* Hacking: la terminal va sin marco (sin barra de puntos, borde, fondo ni sombra); queda solo el texto */
+#ciber.rc-panel .marco.term{border:0;border-radius:0;background:none;box-shadow:none;overflow:visible}
+#ciber.rc-panel .term .barra{display:none}
+#ciber.rc-panel .term .cuerpo{padding:0}
+
+/* El panel no tapa el pie de página: rocas.js pone en --pie cuánto del pie se ve */
+.sec.rc-panel{bottom:var(--pie,0px)}
+
+/* Hacking: sin los comandos de la terminal; el panel queda solo con el texto del proyecto */
+#ciber.rc-panel .escena{display:none}
